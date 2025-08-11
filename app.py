@@ -1,9 +1,10 @@
 from flask import Flask, jsonify
 import requests
 from bs4 import BeautifulSoup
+import os
+
 
 app = Flask(__name__)
-app.run(host='0.0.0.0', port=PORT)
 
 @app.route('/sefaz-status', methods=['GET'])
 def sefaz_status():
@@ -73,6 +74,10 @@ def sefaz_status():
         "body": html
     })
 
+
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
+
+
 
