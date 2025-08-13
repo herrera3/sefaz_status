@@ -73,3 +73,28 @@ def sefaz_status():
         return jsonify({})  # Não envia nada se estiver OK
 
     mensagem_alerta = ""
+    if status == "Error":
+        mensagem_alerta = "<p style='color:red; font-weight:bold;'>⚠️ Atenção: Um ou mais serviços da SEFAZ estão com erro.</p>"
+    elif status == "Warning":
+        mensagem_alerta = "<p style='color:orange; font-weight:bold;'>⚠️ Aviso: Alguns serviços da SEFAZ estão com instabilidade.</p>"
+
+    html = f"{mensagem_alerta}<table style='border-collapse: collapse' border='1'>\n<tr>"
+    for header in table_data[0]:
+        html += f"<th>{header}</th>"
+    html += "</tr>\n"
+
+    for row in table_data[1:]:
+        html += "<tr>\n"
+        for cell in row:
+            html += f"<td>{cell}</td>"
+        html += "</tr>\n"
+    html += "</table>"
+
+    return jsonify({
+        "subject": f"Status SEFAZ: {status}",
+        "body": f"<html><body>{html}</body></html>"
+    })
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
