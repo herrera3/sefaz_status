@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/sefaz-status', methods=['GET'])
 def sefaz_status():
-    url = "https://www.nfe.fazenda.gov.br/portal/disponibilidade.aspx"
+    url = "https://www.nfe.fazenda.gov.br/portal/isponibilidade.aspx"
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
@@ -78,6 +78,7 @@ def sefaz_status():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
