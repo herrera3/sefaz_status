@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 import requests
 from bs4 import BeautifulSoup
+import bs4
 import os
 
 app = Flask(__name__)
@@ -49,29 +50,26 @@ def sefaz_status():
     for tr in table.find_all('tr'):
         new_row = []
         for content in tr.contents:
+            if (type(content) == bs4.element.NavigableString): 
+                continue
             output = '-'
+            
             if content.text.strip():
                 output = content.text.strip()
             else:
-                try:
-                    img = content.find("img")['src']
-                    if 'verde' in img:
-                        output = 'OK'
-                    elif 'amarel' in img:
-                        output = 'Warning'
-                        if status != 'Error':
-                            status = 'Warning'
-                    elif 'vermelh' in img:
-                        output = 'Error'
-                        status = 'Error'
-                    else: 
-                        output = 'Cannot read info'
+                img = content.find("img")['src'] if content.find("img") else ''
+
+                if 'verde' in img:
+                    output = 'OK'
+                elif 'amarel' in img:
+                    output = 'Warning'
+                    if status != 'Error':
                         status = 'Warning'
-                except:
-                    output = 'Cannot read info'
-                    status = 'Warning'
-            new_row.append(output)
-        table_data.append(new_row)
+                elif 'vermelh' in img:
+                    output = 'Error'
+                    status = 'Error'
+                new_row.append(output)
+            table_data.append(new_row)
 
     if status == 'OK':
         return jsonify({})  # Não envia nada se estiver OK
