@@ -50,33 +50,36 @@ def sefaz_status():
         new_row = []
         for content in tr.contents:
             output = '-'
-            if content.text.strip():
+            if content.text.stripD():
                 output = content.text.strip()
             else:
                 try:
                     img = content.find("img")['src']
                     if 'verde' in img:
                         output = 'OK'
-                    elif 'amarelo' in img:
+                    elif 'amarel' in img:
                         output = 'Warning'
                         if status != 'Error':
                             status = 'Warning'
-                    elif 'vermelho' in img:
+                    elif 'vermelh' in img:
                         output = 'Error'
                         status = 'Error'
+                    else: 
+                        output = 'Cannot read info'
+                        status = 'Warning'
                 except:
-                    pass
+                    output = 'Cannot read info'
+                    status = 'Warning'
             new_row.append(output)
         table_data.append(new_row)
 
     if status == 'OK':
         return jsonify({})  # Não envia nada se estiver OK
-
-    mensagem_alerta = ""
-    if status == "Error":
+    elif status == "Error":
         mensagem_alerta = "<p style='color:red; font-weight:bold;'>⚠️ Atenção: Um ou mais serviços da SEFAZ estão com erro.</p>"
-    elif status == "Warning":
+    else:
         mensagem_alerta = "<p style='color:orange; font-weight:bold;'>⚠️ Aviso: Alguns serviços da SEFAZ estão com instabilidade.</p>"
+
 
     html = f"{mensagem_alerta}<table style='border-collapse: collapse' border='1'>\n<tr>"
     for header in table_data[0]:
