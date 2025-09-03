@@ -50,7 +50,7 @@ def sefaz_status():
         new_row = []
         for content in tr.contents:
             output = '-'
-            if content.text.stripD():
+            if content.text.strip():
                 output = content.text.strip()
             else:
                 try:
